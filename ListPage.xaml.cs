@@ -30,10 +30,25 @@ public partial class ListPage : ContentPage
 			BindingContext = new Product()
 		});
     }
+    async void OnDeleteItemClicked(object sender, EventArgs e)
+    {
+        // Ensure that the BindingContext is of type ShopList
+        if (BindingContext is ShopList shopList)
+        {
+            // Implement the logic to delete the selected item from the shopping list
+            if (listView.SelectedItem != null)
+            {
+                var selectedItem = (Product)listView.SelectedItem;
+                await App.Database.DeleteProductAsync(selectedItem);
+                listView.ItemsSource = await App.Database.GetListProductsAsync(shopList.ID);
+            }
+        }
+    }
     protected override async void OnAppearing()
     {
         base.OnAppearing();
         var shopl = (ShopList)BindingContext;
         listView.ItemsSource = await App.Database.GetListProductsAsync(shopl.ID);
     }
+
 }
